@@ -1,13 +1,31 @@
-import { createClient } from '@supabase/supabase-js'
+// supabaseClient.ts
+import { createClient } from '@supabase/supabase-js';
 
-// Use placeholder values when environment variables are not set
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://gbxrhrgeyficcuafeqzq.supabase.co'
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdieHJocmdleWZpY2N1YWZlcXpxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk4MDE4MzEsImV4cCI6MjA2NTM3NzgzMX0.L4HX82pb0vPnN_Z6nydnedQ5E1jPm8APV5bghphhjU4'
+// Use fallback placeholder values for development or testing environments
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://gbxrhrgeyficcuafeqzq.supabase.co';
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdieHJocmdleWZpY2N1YWZlcXpxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk4MDE4MzEsImV4cCI6MjA2NTM3NzgzMX0.L4HX82pb0vPnN_Z6nydnedQ5E1jPm8APV5bghphhjU4';
 
-// Check if we have valid Supabase configuration
-const hasValidSupabaseConfig = supabaseUrl !== 'https://placeholder.supabase.co' && supabaseAnonKey !== 'placeholder-anon-key'
+// Determine whether the configuration is valid (not using placeholder values)
+const hasValidSupabaseConfig =
+  supabaseUrl !== 'https://placeholder.supabase.co' &&
+  supabaseAnonKey !== 'placeholder-anon-key';
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey)
+// Initialize the Supabase client
+export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+
+// Export configuration validation state
+export { hasValidSupabaseConfig };
+
+// Centralized declaration of Supabase table names
+export const TABLES = {
+  MEMBERS: 'members',
+  MEMBER_PAYMENTS: 'member_payments',
+  CONTRIBUTIONS: 'contributions',
+  DONATIONS: 'donations',
+  EXPENSES: 'expenses',
+  BALANCES: 'balances_brought_forward',
+  ANNOUNCEMENTS: 'announcements',
+};
 
 // Database types
 export interface Member {
