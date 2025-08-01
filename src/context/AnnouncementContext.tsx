@@ -82,6 +82,19 @@ export const AnnouncementProvider: React.FC<AnnouncementProviderProps> = ({ chil
   // Upload file to Supabase Storage
   const uploadAttachment = async (file: File): Promise<string> => {
     try {
+      // Check if storage is available
+      const { data: buckets, error: bucketsError } = await supabase.storage.listBuckets();
+      if (bucketsError) {
+        console.warn('Storage not available:', bucketsError);
+        throw new Error('File storage is not available');
+      }
+      
+      const attachmentsBucket = buckets.find(bucket => bucket.name === 'attachments');
+      if (!attachmentsBucket) {
+        console.warn('Attachments bucket not found');
+        throw new Error('File storage bucket not configured');
+      }
+      
       const fileExt = file.name.split('.').pop();
       const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
       const filePath = `announcements/${fileName}`;
@@ -99,7 +112,7 @@ export const AnnouncementProvider: React.FC<AnnouncementProviderProps> = ({ chil
       return publicUrl;
     } catch (err) {
       console.error('Error uploading file:', err);
-      throw new Error('Failed to upload file');
+      throw new Error(err instanceof Error ? err.message : 'Failed to upload file');
     }
   };
 
@@ -110,9 +123,15 @@ export const AnnouncementProvider: React.FC<AnnouncementProviderProps> = ({ chil
       // Upload attachments if any
       let attachmentUrls: string[] = [];
       if (announcement.attachments && announcement.attachments.length > 0) {
-        attachmentUrls = await Promise.all(
-          announcement.attachments.map(file => uploadAttachment(file))
-        );
+        try {
+          attachmentUrls = await Promise.all(
+            announcement.attachments.map(file => uploadAttachment(file))
+          );
+        } catch (uploadError) {
+          console.warn('File upload failed, proceeding without attachments:', uploadError);
+          // Continue without attachments if upload fails
+          attachmentUrls = [];
+        }
       }
 
       const newAnnouncement = await dbHelpers.addAnnouncement({
@@ -154,10 +173,15 @@ export const AnnouncementProvider: React.FC<AnnouncementProviderProps> = ({ chil
       // Upload new attachments if any
       let attachmentUrls: string[] = announcement.attachmentUrls || [];
       if (announcement.attachments && announcement.attachments.length > 0) {
-        const newUrls = await Promise.all(
-          announcement.attachments.map(file => uploadAttachment(file))
-        );
-        attachmentUrls = [...attachmentUrls, ...newUrls];
+        try {
+          const newUrls = await Promise.all(
+            announcement.attachments.map(file => uploadAttachment(file))
+          );
+          attachmentUrls = [...attachmentUrls, ...newUrls];
+        } catch (uploadError) {
+          console.warn('File upload failed, proceeding with existing attachments:', uploadError);
+          // Continue with existing attachments if new upload fails
+        }
       }
 
       const updatedAnnouncement = await dbHelpers.updateAnnouncement(id, {
