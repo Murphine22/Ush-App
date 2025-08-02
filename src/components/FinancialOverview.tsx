@@ -48,11 +48,18 @@ const FinancialOverview = ({ selectedYear }: FinancialOverviewProps) => {
       description: `From ${selectedYear - 1}`
     },
     {
+      title: 'Current Year Income',
+      value: totals.currentYearIncome,
+      icon: <TrendingUp className="h-8 w-8 text-emerald-600" />,
+      color: 'emerald',
+      description: 'Dues + Contributions + Donations'
+    },
+    {
       title: 'Monthly Dues Received',
       value: totals.monthlyDues,
       icon: <DollarSign className="h-8 w-8 text-blue-600" />,
       color: 'blue',
-      description: 'Current year dues'
+      description: 'From Monthly Dues Records'
     },
     {
       title: 'Contributions',

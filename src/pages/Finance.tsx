@@ -216,7 +216,7 @@ const Finance = () => {
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-gray-600 dark:text-gray-300">Current Year Income</span>
-                  <span className="font-semibold text-blue-600">₦{(yearlyTotals.totalIncome - yearlyTotals.balanceBroughtForward).toLocaleString()}</span>
+                  <span className="font-semibold text-blue-600">₦{yearlyTotals.currentYearIncome.toLocaleString()}</span>
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-gray-600 dark:text-gray-300">Total Income</span>

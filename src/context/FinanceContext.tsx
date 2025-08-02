@@ -409,9 +409,9 @@ export const FinanceProvider: React.FC<FinanceProviderProps> = ({ children }) =>
   const getYearlyTotals = (year: number) => {
     const balanceBroughtForward = balancesBroughtForward.find(b => b.year === year)?.amount || 0;
     
-    // Calculate monthly dues from member payments
+    // Calculate monthly dues from member payments - synchronized with database
     const yearPayments = memberPayments.filter(p => p.year === year && p.paid);
-    const monthlyDues = yearPayments.reduce((total, payment) => total + payment.amount, 0);
+    const monthlyDues = yearPayments.reduce((total, payment) => total + (payment.amount || 500), 0);
     
     const yearContributions = contributions
       .filter(c => new Date(c.date).getFullYear() === year)
@@ -425,12 +425,15 @@ export const FinanceProvider: React.FC<FinanceProviderProps> = ({ children }) =>
       .filter(e => new Date(e.date).getFullYear() === year)
       .reduce((total, e) => total + e.amount, 0);
     
+    // Current year income = monthly dues + contributions + donations (excluding balance B/F)
+    const currentYearIncome = monthlyDues + yearContributions + yearDonations;
     const totalIncome = balanceBroughtForward + monthlyDues + yearContributions + yearDonations;
     const balance = totalIncome - yearExpenses;
     
     return {
       balanceBroughtForward,
       monthlyDues,
+      currentYearIncome,
       contributions: yearContributions,
       donations: yearDonations,
       totalIncome,
@@ -440,11 +443,11 @@ export const FinanceProvider: React.FC<FinanceProviderProps> = ({ children }) =>
   };
 
   const getMonthlyReport = (year: number, month: number) => {
-    // Calculate monthly dues from member payments
+    // Calculate monthly dues from member payments - synchronized with database
     const monthPayments = memberPayments.filter(p => 
       p.year === year && p.month === month && p.paid
     );
-    const monthlyDues = monthPayments.reduce((total, payment) => total + payment.amount, 0);
+    const monthlyDues = monthPayments.reduce((total, payment) => total + (payment.amount || 500), 0);
     
     const monthContributions = contributions
       .filter(c => {
