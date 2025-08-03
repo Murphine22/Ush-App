@@ -19,9 +19,12 @@ const AnnouncementManager = () => {
     senderName: '',
     isPinned: false,
     attachments: [] as File[],
-    attachmentUrls: [] as string[]
+    attachmentUrls: [] as string[],
+    imageUrl: '',
+    imageFile: null as File | null
   });
   const [uploading, setUploading] = useState(false);
+  const [imageUploadMethod, setImageUploadMethod] = useState<'url' | 'file'>('url');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -46,7 +49,9 @@ const AnnouncementManager = () => {
         senderName: '',
         isPinned: false,
         attachments: [],
-        attachmentUrls: []
+        attachmentUrls: announcement.attachmentUrls || [],
+        imageUrl: '',
+        imageFile: null
       });
       setShowAddForm(false);
     } catch (err) {
@@ -86,8 +91,11 @@ const AnnouncementManager = () => {
       senderName: '',
       isPinned: false,
       attachments: [],
-      attachmentUrls: []
+      attachmentUrls: [],
+      imageUrl: '',
+      imageFile: null
     });
+    setImageUploadMethod('url');
   };
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -96,6 +104,13 @@ const AnnouncementManager = () => {
     setFormData({ ...formData, attachments: [...formData.attachments, ...files] });
   };
 
+  const handleImageFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!isAnnouncementAdmin) return; // Only admins can upload
+    const file = e.target.files?.[0];
+    if (file && file.type.startsWith('image/')) {
+      setFormData({ ...formData, imageFile: file });
+    }
+  };
   const removeAttachment = (index: number) => {
     const newAttachments = formData.attachments.filter((_, i) => i !== index);
     setFormData({ ...formData, attachments: newAttachments });
@@ -106,6 +121,24 @@ const AnnouncementManager = () => {
     setFormData({ ...formData, attachmentUrls: newUrls });
   };
 
+  const downloadFile = async (url: string, filename?: string) => {
+    try {
+      const response = await fetch(url);
+      const blob = await response.blob();
+      const downloadUrl = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = downloadUrl;
+      a.download = filename || url.split('/').pop() || 'download';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(downloadUrl);
+    } catch (error) {
+      console.error('Download failed:', error);
+      // Fallback: open in new tab
+      window.open(url, '_blank');
+    }
+  };
   const getFileIcon = (file: File | string) => {
     let type = '';
     if (typeof file === 'string') {
@@ -218,8 +251,21 @@ const AnnouncementManager = () => {
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
-    // You could add a toast notification here
-    alert('Link copied to clipboard!');
+    // Create a temporary toast notification
+    const toast = document.createElement('div');
+    toast.className = 'fixed bottom-4 right-4 bg-green-600 text-white px-4 py-2 rounded-lg shadow-lg z-50 animate-bounce-in';
+    toast.innerHTML = `
+      <div class="flex items-center space-x-2">
+        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+        </svg>
+        <span class="text-sm font-medium">Copied to clipboard!</span>
+      </div>
+    `;
+    document.body.appendChild(toast);
+    setTimeout(() => {
+      document.body.removeChild(toast);
+    }, 3000);
   };
 
   const shareToSocial = (platform: string, announcement: Announcement) => {
@@ -459,6 +505,134 @@ const AnnouncementManager = () => {
                   placeholder="Your name..."
                 />
               </div>
+              
+              {/* Image Upload Section */}
+              <div className="md:col-span-2">
+                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3 flex items-center space-x-2">
+                  <Image className="h-4 w-4" />
+                  <span>Post Image (Admin Only)</span>
+                </label>
+                
+                {/* Image Upload Method Selector */}
+                <div className="flex space-x-4 mb-4">
+                  <button
+                    type="button"
+                    onClick={() => setImageUploadMethod('url')}
+                    className={`px-4 py-2 rounded-lg transition-all duration-300 ${
+                      imageUploadMethod === 'url'
+                        ? 'bg-blue-600 text-white shadow-lg'
+                        : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600'
+                    }`}
+                    disabled={uploading}
+                  >
+                    Image URL
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setImageUploadMethod('file')}
+                    className={`px-4 py-2 rounded-lg transition-all duration-300 ${
+                      imageUploadMethod === 'file'
+                        ? 'bg-blue-600 text-white shadow-lg'
+                        : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600'
+                    }`}
+                    disabled={uploading}
+                  >
+                    Upload File
+                  </button>
+                </div>
+                
+                {/* Image URL Input */}
+                {imageUploadMethod === 'url' && (
+                  <div className="space-y-3">
+                    <input
+                      type="url"
+                      value={formData.imageUrl}
+                      onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
+                      className="w-full border-2 border-gray-300 dark:border-gray-600 rounded-xl px-4 py-3 focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 dark:bg-gray-800 dark:text-white transition-all duration-300 shadow-sm hover:shadow-md"
+                      placeholder="https://example.com/image.jpg"
+                      disabled={uploading}
+                    />
+                    {formData.imageUrl && (
+                      <div className="mt-3 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-200 dark:border-blue-700">
+                        <p className="text-sm font-medium text-blue-800 dark:text-blue-200 mb-2">Image Preview:</p>
+                        <img
+                          src={formData.imageUrl}
+                          alt="Preview"
+                          className="w-full h-32 object-cover rounded-lg"
+                          onError={(e) => {
+                            e.currentTarget.style.display = 'none';
+                            e.currentTarget.nextElementSibling!.textContent = 'Invalid image URL';
+                          }}
+                        />
+                        <p className="text-xs text-blue-600 dark:text-blue-400 mt-2">Image will be displayed in the post</p>
+                      </div>
+                    )}
+                  </div>
+                )}
+                
+                {/* Image File Upload */}
+                {imageUploadMethod === 'file' && (
+                  <div className="space-y-3">
+                    <div className="border-2 border-dashed border-blue-300 dark:border-blue-600 rounded-xl p-6 bg-blue-50/50 dark:bg-blue-900/10 hover:bg-blue-100/50 dark:hover:bg-blue-900/20 transition-all duration-300">
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleImageFileUpload}
+                        className="hidden"
+                        id="image-upload"
+                        disabled={uploading}
+                      />
+                      <label
+                        htmlFor="image-upload"
+                        className={`cursor-pointer flex flex-col items-center justify-center space-y-3 ${uploading ? 'opacity-50 cursor-not-allowed' : 'hover:scale-105 transition-transform duration-300'}`}
+                      >
+                        <div className="bg-blue-600 p-3 rounded-xl">
+                          <Image className="h-6 w-6 text-white" />
+                        </div>
+                        <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                          Click to upload image
+                        </span>
+                        <span className="text-xs text-gray-600 dark:text-gray-400">
+                          JPG, PNG, GIF up to 10MB
+                        </span>
+                      </label>
+                    </div>
+                    
+                    {formData.imageFile && (
+                      <div className="mt-3 p-3 bg-green-50 dark:bg-green-900/20 rounded-xl border border-green-200 dark:border-green-700">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center space-x-2">
+                            <Image className="h-4 w-4 text-green-600" />
+                            <span className="text-sm font-medium text-green-800 dark:text-green-200">{formData.imageFile.name}</span>
+                            <button
+                              type="button"
+                              onClick={() => downloadFile(URL.createObjectURL(file), file.name)}
+                              className="text-green-600 hover:text-green-800 dark:text-green-400 dark:hover:text-green-300 transition-all duration-300 transform hover:scale-110"
+                              title="Download file"
+                            >
+                              <Download className="h-4 w-4" />
+                            </button>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => setFormData({ ...formData, imageFile: null })}
+                            className="text-red-500 hover:text-red-700 transition-colors"
+                            disabled={uploading}
+                          >
+                            <X className="h-4 w-4" />
+                          </button>
+                        </div>
+                        <img
+                          src={URL.createObjectURL(formData.imageFile)}
+                          alt="Preview"
+                          className="w-full h-32 object-cover rounded-lg mt-2"
+                        />
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+              
               <div className="flex items-center space-x-3 bg-blue-50 dark:bg-blue-900/20 rounded-xl p-4">
                 <Pin className="h-5 w-5 text-blue-600" />
                 <input
@@ -491,16 +665,16 @@ const AnnouncementManager = () => {
               <div className="md:col-span-2">
                 <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3 flex items-center space-x-2">
                   <Upload className="h-4 w-4" />
-                  <span>Attachments (Admin Only)</span>
+                  <span>File Attachments (Admin Only)</span>
                 </label>
                 <div className="text-xs text-gray-600 dark:text-gray-400 mb-2">
-                  Upload files that all users can download
+                  Upload documents, PDFs, and other files that all users can download
                 </div>
                 <div className="border-2 border-dashed border-blue-300 dark:border-blue-600 rounded-xl p-6 bg-blue-50/50 dark:bg-blue-900/10 hover:bg-blue-100/50 dark:hover:bg-blue-900/20 transition-all duration-300">
                   <input
                     type="file"
                     multiple
-                    accept=".pdf,.doc,.docx,.txt,.jpg,.jpeg,.png,.gif,.mp4,.mov,.avi"
+                    accept=".pdf,.doc,.docx,.txt,.mp4,.mov,.avi"
                     onChange={handleFileUpload}
                     className="hidden"
                     id="file-upload"
@@ -517,7 +691,7 @@ const AnnouncementManager = () => {
                       Click to upload files or drag and drop
                     </span>
                     <span className="text-xs text-gray-600 dark:text-gray-400">
-                      PDF, DOC, Images, Videos (Max 10MB each)
+                      PDF, DOC, Videos (Max 10MB each)
                     </span>
                   </label>
                 </div>
@@ -536,6 +710,14 @@ const AnnouncementManager = () => {
                           <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
                             {url.split('/').pop()?.split('-').slice(1).join('-') || 'Attachment'}
                           </span>
+                          <button
+                            type="button"
+                            onClick={() => downloadFile(url)}
+                            className="text-green-600 hover:text-green-800 dark:text-green-400 dark:hover:text-green-300 transition-all duration-300 transform hover:scale-110"
+                            title="Download file"
+                          >
+                            <Download className="h-4 w-4" />
+                          </button>
                         </div>
                         <div className="flex items-center space-x-2">
                           <button
@@ -687,6 +869,20 @@ const AnnouncementManager = () => {
                   {announcement.title}
                 </h4>
                 
+                {/* Post Image Display */}
+                {(announcement.attachmentUrls?.some(url => /\.(jpg|jpeg|png|gif|webp)$/i.test(url)) || formData.imageUrl) && (
+                  <div className="mb-4 rounded-2xl overflow-hidden shadow-lg group-hover:shadow-xl transition-all duration-300">
+                    <img
+                      src={announcement.attachmentUrls?.find(url => /\.(jpg|jpeg|png|gif|webp)$/i.test(url)) || formData.imageUrl}
+                      alt={announcement.title}
+                      className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-500"
+                      onError={(e) => {
+                        e.currentTarget.style.display = 'none';
+                      }}
+                    />
+                  </div>
+                )}
+                
                 {/* Meta Information */}
                 <div className="flex flex-wrap items-center gap-2 text-xs text-gray-600 dark:text-gray-400 mb-4">
                   <div className="flex items-center space-x-1 bg-white/50 dark:bg-gray-800/50 px-2 py-1 rounded-full backdrop-blur-sm">
@@ -748,17 +944,34 @@ const AnnouncementManager = () => {
                       <span>Downloads:</span>
                     </p>
                     <div className="flex flex-wrap gap-2">
-                      {announcement.attachmentUrls.map((url, index) => (
+                      {announcement.attachmentUrls.filter(url => !/\.(jpg|jpeg|png|gif|webp)$/i.test(url)).map((url, index) => (
                         <button
                           key={index}
-                          onClick={() => openAttachment(url)}
-                          className="flex items-center space-x-2 bg-gradient-to-r from-blue-100 to-purple-100 dark:from-blue-900/30 dark:to-purple-900/30 text-blue-700 dark:text-blue-300 px-3 py-2 rounded-xl hover:from-blue-200 hover:to-purple-200 dark:hover:from-blue-900/50 dark:hover:to-purple-900/50 transition-all duration-300 text-xs font-medium shadow-sm hover:shadow-md transform hover:scale-105"
+                          onClick={() => downloadFile(url)}
+                          className="flex items-center space-x-2 bg-gradient-to-r from-green-100 to-emerald-100 dark:from-green-900/30 dark:to-emerald-900/30 text-green-700 dark:text-green-300 px-3 py-2 rounded-xl hover:from-green-200 hover:to-emerald-200 dark:hover:from-green-900/50 dark:hover:to-emerald-900/50 transition-all duration-300 text-xs font-medium shadow-sm hover:shadow-md transform hover:scale-105"
+                          title="Download file"
                         >
                           {getFileIcon(url)}
                           <span className="truncate max-w-20">{url.split('/').pop()?.split('-').slice(1).join('-') || 'File'}</span>
                           <Download className="h-3 w-3" />
                         </button>
                       ))}
+                      
+                      {/* Separate Download All Button if multiple files */}
+                      {announcement.attachmentUrls.filter(url => !/\.(jpg|jpeg|png|gif|webp)$/i.test(url)).length > 1 && (
+                        <button
+                          onClick={() => {
+                            announcement.attachmentUrls?.filter(url => !/\.(jpg|jpeg|png|gif|webp)$/i.test(url)).forEach(url => {
+                              setTimeout(() => downloadFile(url), 100);
+                            });
+                          }}
+                          className="flex items-center space-x-2 bg-gradient-to-r from-purple-100 to-pink-100 dark:from-purple-900/30 dark:to-pink-900/30 text-purple-700 dark:text-purple-300 px-3 py-2 rounded-xl hover:from-purple-200 hover:to-pink-200 dark:hover:from-purple-900/50 dark:hover:to-pink-900/50 transition-all duration-300 text-xs font-medium shadow-sm hover:shadow-md transform hover:scale-105"
+                          title="Download all files"
+                        >
+                          <Download className="h-3 w-3" />
+                          <span>Download All</span>
+                        </button>
+                      )}
                     </div>
                   </div>
                 )}
@@ -797,6 +1010,13 @@ const AnnouncementManager = () => {
                       >
                         <Twitter className="h-3 w-3" />
                       </button>
+                      <button
+                        onClick={() => copyToClipboard(`${announcement.title}\n\n${announcement.content}\n\n${window.location.href}`)}
+                        className="bg-gray-600 text-white p-2 rounded-lg hover:bg-gray-700 transition-all duration-300 transform hover:scale-110 shadow-md"
+                        title="Copy to clipboard"
+                      >
+                        <Copy className="h-3 w-3" />
+                      </button>
                     </div>
                   </div>
                   
@@ -805,6 +1025,34 @@ const AnnouncementManager = () => {
                     <span>{Math.floor(Math.random() * 500) + 50} views</span>
                   </div>
                 </div>
+                
+                {/* Download Section for All Users */}
+                {announcement.attachmentUrls && announcement.attachmentUrls.filter(url => !/\.(jpg|jpeg|png|gif|webp)$/i.test(url)).length > 0 && (
+                  <div className="mt-4 pt-4 border-t border-white/20 dark:border-gray-700/20">
+                    <div className="flex items-center justify-between">
+                      <p className="text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center space-x-2">
+                        <Download className="h-4 w-4" />
+                        <span>Available Downloads:</span>
+                      </p>
+                      <span className="text-xs text-gray-500 dark:text-gray-400">
+                        {announcement.attachmentUrls.filter(url => !/\.(jpg|jpeg|png|gif|webp)$/i.test(url)).length} files
+                      </span>
+                    </div>
+                    <div className="flex flex-wrap gap-2 mt-2">
+                      {announcement.attachmentUrls.filter(url => !/\.(jpg|jpeg|png|gif|webp)$/i.test(url)).map((url, index) => (
+                        <button
+                          key={index}
+                          onClick={() => downloadFile(url)}
+                          className="flex items-center space-x-1 bg-white/50 dark:bg-gray-800/50 text-gray-700 dark:text-gray-300 px-2 py-1 rounded-lg hover:bg-white/70 dark:hover:bg-gray-800/70 transition-all duration-300 text-xs font-medium shadow-sm hover:shadow-md transform hover:scale-105 backdrop-blur-sm"
+                          title="Download file"
+                        >
+                          {getFileIcon(url)}
+                          <span className="truncate max-w-16">{url.split('/').pop()?.split('-').slice(1).join('-') || 'File'}</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           ))}
