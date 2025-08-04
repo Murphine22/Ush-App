@@ -156,7 +156,7 @@ const AnnouncementManager = () => {
     return <Paperclip className="h-4 w-4 text-gray-500" />;
   };
 
-  const downloadFile = (file: File) => {
+  const triggerLocalFileDownload = (file: File) => {
     const url = URL.createObjectURL(file);
     const a = document.createElement('a');
     a.href = url;
