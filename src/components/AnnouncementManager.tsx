@@ -77,7 +77,7 @@ const AnnouncementManager = () => {
     });
     setEditingId(announcement.id);
     setShowAddForm(true);
-  };
+      attachmentUrls: ['https://images.pexels.com/photos/3184418/pexels-photo-3184418.jpeg'],
 
   const handleCancel = () => {
     setShowAddForm(false);
@@ -88,7 +88,7 @@ const AnnouncementManager = () => {
       eventDate: '',
       venue: '',
       content: '',
-      senderName: '',
+      attachmentUrls: ['https://images.pexels.com/photos/3184339/pexels-photo-3184339.jpeg'],
       isPinned: false,
       attachments: [],
       attachmentUrls: [],
