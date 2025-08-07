@@ -78,6 +78,8 @@ const AnnouncementManager = () => {
     setEditingId(announcement.id);
     setShowAddForm(true);
       attachmentUrls: ['https://images.pexels.com/photos/3184418/pexels-photo-3184418.jpeg'],
+    }
+  ];
 
   const handleCancel = () => {
     setShowAddForm(false);
