@@ -5,12 +5,15 @@ import AnnouncementManager from '../components/AnnouncementManager';
 import MemberSearchPortal from '../components/MemberSearchPortal';
 import Footer from '../components/Footer';
 import SupportPage from './Support';
+import SEOManager from '../components/SEO/SEOManager';
 import { useFinance } from '../context/FinanceContext';
+import { generateMetaTags } from '../utils/seo';
 
 const Home = () => {
   const { getTotalMemberCount } = useFinance();
   const memberCount = getTotalMemberCount();
   const [showSupport, setShowSupport] = React.useState(false);
+  const seoData = generateMetaTags('home');
   
   const features = [
     {
@@ -40,6 +43,15 @@ const Home = () => {
   };
 
   return (
+    <>
+      <SEOManager
+        title={seoData.title}
+        description={seoData.description}
+        keywords={seoData.keywords}
+        image={seoData.image}
+        url={seoData.url}
+        type="website"
+      />
     <div className="min-h-screen">
       {/* Hero Section - Made Taller */}
 <section 
@@ -141,6 +153,7 @@ const Home = () => {
 
       <Footer />
     </div>
+    </>
   );
 };
 

@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useFinance } from '../context/FinanceContext';
 import LoginForm from '../components/LoginForm';
+import SEOManager from '../components/SEO/SEOManager';
 import { ArrowLeft, Plus, Edit, Save, X, Trash2, Printer, Download, Calendar, Home, FileText, Share, AlertCircle, Shield, Crown } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { generateMetaTags } from '../utils/seo';
 
 const MonthlyDuesRecord = () => {
   const { isAuthenticated, isFullAdmin, userRole } = useAuth();
@@ -22,6 +24,7 @@ const MonthlyDuesRecord = () => {
   const [editingMember, setEditingMember] = useState<string | null>(null);
   const [editName, setEditName] = useState('');
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+  const seoData = generateMetaTags('monthly-dues-record');
 
   // Generate years starting from 2024
   const currentYear = new Date().getFullYear();
@@ -43,6 +46,12 @@ const MonthlyDuesRecord = () => {
   // Redirect if not full admin
   if (!isAuthenticated || !isFullAdmin) {
     return (
+      <>
+        <SEOManager
+          title="Access Restricted - Monthly Dues Record | DIGC Ushering Department"
+          description="Access to monthly dues record management requires full administrator privileges."
+          keywords="Access Restricted, Admin Login, Monthly Dues, DIGC"
+        />
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
         <div className="max-w-md w-full mx-4">
           <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 text-center">
@@ -87,6 +96,7 @@ const MonthlyDuesRecord = () => {
           </div>
         </div>
       </div>
+      </>
     );
   }
 
@@ -261,6 +271,15 @@ const MonthlyDuesRecord = () => {
   }
 
   return (
+    <>
+      <SEOManager
+        title={seoData.title}
+        description={seoData.description}
+        keywords={seoData.keywords}
+        image={seoData.image}
+        url={seoData.url}
+        type="website"
+      />
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
       {/* Enhanced Header */}
       <section className="bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-800 dark:to-purple-800 text-white py-8 sm:py-12 transition-colors duration-300">
@@ -583,6 +602,7 @@ const MonthlyDuesRecord = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 

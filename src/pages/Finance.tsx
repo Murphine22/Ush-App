@@ -9,13 +9,16 @@ import ContributionsSection from '../components/ContributionsSection';
 import DonationsSection from '../components/DonationsSection';
 import ExpensesSection from '../components/ExpensesSection';
 import Footer from '../components/Footer';
+import SEOManager from '../components/SEO/SEOManager';
 import { Link } from 'react-router-dom';
 import { Users, FileText, Lock, TrendingUp, ArrowUpCircle, Eye, Shield, Crown, AlertTriangle, Ban } from 'lucide-react';
+import { generateMetaTags } from '../utils/seo';
 
 const Finance = () => {
   const { isAuthenticated, isFullAdmin, userRole } = useAuth();
   const { getYearlyTotals } = useFinance();
   const [selectedYear, setSelectedYear] = useState(2025);
+  const seoData = generateMetaTags('finance');
   
   // Generate years starting from 2024 to 2200 for comprehensive data support
   const currentYear = new Date().getFullYear();
@@ -26,6 +29,15 @@ const Finance = () => {
   const yearlyTotals = getYearlyTotals(selectedYear);
 
   return (
+    <>
+      <SEOManager
+        title={seoData.title}
+        description={seoData.description}
+        keywords={seoData.keywords}
+        image={seoData.image}
+        url={seoData.url}
+        type="website"
+      />
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
       {/* Header - Made Taller */}
       <section className="bg-blue-600 dark:bg-blue-800 text-white py-16 sm:py-20 lg:py-24 transition-colors duration-300">
@@ -332,6 +344,7 @@ const Finance = () => {
 
       <Footer />
     </div>
+    </>
   );
 };
 

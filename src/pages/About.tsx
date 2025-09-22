@@ -2,11 +2,14 @@ import React from 'react';
 import { Users, Target, BookOpen, Award, Heart, Shield, Lightbulb, Handshake } from 'lucide-react';
 import ImageCarousel from '../components/ImageCarousel';
 import Footer from '../components/Footer';
+import SEOManager from '../components/SEO/SEOManager';
 import { useFinance } from '../context/FinanceContext';
+import { generateMetaTags } from '../utils/seo';
 
 const About = () => {
   const { getTotalMemberCount } = useFinance();
   const memberCount = getTotalMemberCount();
+  const seoData = generateMetaTags('about');
 
   const coreValues = [
     {
@@ -52,6 +55,15 @@ const About = () => {
   ];
 
   return (
+    <>
+      <SEOManager
+        title={seoData.title}
+        description={seoData.description}
+        keywords={seoData.keywords}
+        image={seoData.image}
+        url={seoData.url}
+        type="website"
+      />
     <div className="min-h-screen">
       {/* Hero Section - Made Taller */}
       <section 
@@ -174,6 +186,7 @@ const About = () => {
 
       <Footer />
     </div>
+    </>
   );
 };
 
