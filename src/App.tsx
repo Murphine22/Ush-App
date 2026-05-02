@@ -4,7 +4,7 @@ import Navbar from './components/Navbar';
 import Home from './pages/Home';
 import About from './pages/About';
 import Services from './pages/Services';
-import Finance from './pages/Finance';
+import Fashion from './pages/Fashion';
 import MonthlyDuesRecord from './pages/MonthlyDuesRecord';
 import FloatingButtons from './components/FloatingButtons';
 import { AuthProvider } from './context/AuthContext';
@@ -27,7 +27,7 @@ function App() {
                     <Route path="/" element={<Home />} />
                     <Route path="/about" element={<About />} />
                     <Route path="/services" element={<Services />} />
-                    <Route path="/finance" element={<Finance />} />
+                    <Route path="/fashion" element={<Fashion />} />
                     <Route path="/monthly-dues-record" element={<MonthlyDuesRecord />} />
                   </Routes>
                   <FloatingButtons />

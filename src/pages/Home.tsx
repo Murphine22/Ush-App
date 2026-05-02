@@ -2,16 +2,13 @@ import React from 'react';
 import { Users, Heart, Shield, HandHeart, Star, ChevronRight } from 'lucide-react';
 import ImageCarousel from '../components/ImageCarousel';
 import AnnouncementManager from '../components/AnnouncementManager';
-import MemberSearchPortal from '../components/MemberSearchPortal';
 import Footer from '../components/Footer';
 import SupportPage from './Support';
 import SEOManager from '../components/SEO/SEOManager';
-import { useFinance } from '../context/FinanceContext';
 import { generateMetaTags } from '../utils/seo';
 
 const Home = () => {
-  const { getTotalMemberCount } = useFinance();
-  const memberCount = getTotalMemberCount();
+  const memberCount = 577;
   const [showSupport, setShowSupport] = React.useState(false);
   const seoData = generateMetaTags('home');
   
@@ -88,17 +85,6 @@ const Home = () => {
               </div>
             </div>
           </div>
-        </div>
-      </section>
-
-      {/* Member Search Portal */}
-      <section id="member-search-section" className="py-12 sm:py-16 bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-blue-900/20 dark:to-indigo-900/20 transition-colors duration-300">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-8 sm:mb-12">
-            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-4">Check Your Records</h2>
-            <p className="text-lg sm:text-xl text-gray-600 dark:text-gray-300">Search for your payment history and financial records</p>
-          </div>
-          <MemberSearchPortal />
         </div>
       </section>
 
