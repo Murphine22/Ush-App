@@ -1,14 +1,12 @@
 import React from 'react';
-import { Users, Heart, Navigation, Calendar, Accessibility, UsersIcon, ChevronRight, Shield, Headphones, Coffee, Gift, MapPin, Clock } from 'lucide-react';
+import { Users, Heart, Navigation, Calendar, Accessibility, Users as UsersIcon, ChevronRight, Shield, Headphones, Coffee, Gift, MapPin, Clock } from 'lucide-react';
 import Footer from '../components/Footer';
 import SupportPage from './Support';
 import SEOManager from '../components/SEO/SEOManager';
-import { useFinance } from '../context/FinanceContext';
 import { generateMetaTags } from '../utils/seo';
 
 const Services = () => {
-  const { getTotalMemberCount } = useFinance();
-  const memberCount = getTotalMemberCount();
+  const memberCount = 225;
   const [showSupport, setShowSupport] = React.useState(false);
   const seoData = generateMetaTags('services');
 

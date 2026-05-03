@@ -13,39 +13,93 @@ const Fashion = () => {
   const uniforms = [
     {
       id: 1,
-      name: 'Formal Service Attire',
-      image: 'https://images.pexels.com/photos/3622618/pexels-photo-3622618.jpeg?auto=compress&cs=tinysrgb&w=600',
-      description: 'Professional black suit for formal church services and special ceremonies'
+      name: 'Formal Service Attire (Black Gown)',
+      image: 'https://i.imgur.com/3DwP5KR.png?auto=compress&cs=tinysrgb&w=600',
+      description: 'Professional black gown for formal church services and special ceremonies'
     },
     {
       id: 2,
-      name: 'Sunday Best',
-      image: 'https://images.pexels.com/photos/1926769/pexels-photo-1926769.jpeg?auto=compress&cs=tinysrgb&w=600',
-      description: 'Elegant attire for regular Sunday worship services'
+      name: 'Formal Service Attire (Black Gown & Red Headgear)',
+      image: 'https://i.imgur.com/AJLVEBh.png',
+      description: 'Elegant black gown with red headgear for Sunday worship services'
     },
     {
       id: 3,
-      name: 'Casual Ministry',
-      image: 'https://images.pexels.com/photos/3862632/pexels-photo-3862632.jpeg?auto=compress&cs=tinysrgb&w=600',
-      description: 'Comfortable yet professional dress for midweek activities'
+      name: 'Formal Service Attire (Black Gown & Pink Headgear)',
+      image: 'https://i.imgur.com/cwnhQlF.png',
+      description: 'Professional dress with pink headgear for midweek activities'
     },
     {
       id: 4,
-      name: 'Ceremonial Regalia',
-      image: 'https://images.pexels.com/photos/3014856/pexels-photo-3014856.jpeg?auto=compress&cs=tinysrgb&w=600',
+      name: 'Suit (Blue & Cream)',
+      image: 'https://i.imgur.com/RigBE96.png',
       description: 'Distinguished formal wear for special church events and celebrations'
     },
     {
       id: 5,
       name: 'Traditional Ensemble',
-      image: 'https://images.pexels.com/photos/2769274/pexels-photo-2769274.jpeg?auto=compress&cs=tinysrgb&w=600',
+      image: 'https://i.imgur.com/keqlMP8.png',
       description: 'Cultural attire reflecting our heritage and identity'
     },
     {
       id: 6,
+      name: 'Formal Service Attire (Blue Gown)',
+      image: 'https://i.imgur.com/VgKo8iO.png',
+      description: 'Sophisticated blue gown collection for after-service events'
+    },
+    {
+      id: 7,
+      name: 'Formal/Traditional Service Attire',
+      image: 'https://i.imgur.com/Zc0iFEF.png',
+      description: 'Professional cante top for formal church services and special ceremonies'
+    },
+    {
+      id: 8,
+      name: 'Sunday Best',
+      image: 'https://i.imgur.com/IiCXAgn.png',
+      description: 'Elegant attire for regular Sunday worship services'
+    },
+    {
+      id: 9,
+      name: 'Casual Ministry',
+      image: 'https://i.imgur.com/C9S4EE7.png',
+      description: 'Comfortable yet professional dress for Sunday services'
+    },
+    {
+      id: 10,
+      name: 'Ceremonial Regalia',
+      image: 'https://i.imgur.com/BOdLH8V.png',
+      description: 'Distinguished formal wear for special church events and celebrations'
+    },
+    {
+      id: 11,
+      name: 'Traditional Ensemble II',
+      image: 'https://i.imgur.com/RMq0WGu.png',
+      description: 'Cultural attire reflecting our heritage and identity'
+    },
+    {
+      id: 12,
       name: 'Evening Wear',
-      image: 'https://images.pexels.com/photos/3622622/pexels-photo-3622622.jpeg?auto=compress&cs=tinysrgb&w=600',
-      description: 'Sophisticated evening collection for after-service events'
+      image: 'https://i.imgur.com/hNGmmDm.png',
+      description: 'Sophisticated collection for evening church service events'
+    },
+    {
+      id: 13,
+      name: 'Ceremonial Regalia II',
+      image: 'https://i.imgur.com/ECe84Ug.png',
+      description: 'Distinguished formal wear for special church events and celebrations'
+    },
+    {
+      id: 14,
+      name: 'Corporate Outfit',
+      image: 'https://i.imgur.com/ODtEpq0.png',
+      description: 'Professional corporate attire for official department functions'
+    },
+    {
+      id: 15,
+      name: 'Casual Wear',
+      image: 'https://i.imgur.com/wuuU0o1.png',
+      description: 'Sophisticated casual collection for informal service events'
     }
   ];
 
@@ -82,7 +136,7 @@ const Fashion = () => {
               transition={{ duration: 0.8 }}
               className="text-5xl sm:text-6xl lg:text-7xl font-bold bg-gradient-to-r from-blue-400 via-blue-300 to-cyan-400 bg-clip-text text-transparent mb-6"
             >
-              Fashion Lookbook
+              Uniform Lookbook
             </motion.h1>
             <motion.p
               initial={{ opacity: 0, y: 20 }}
@@ -173,7 +227,7 @@ const Fashion = () => {
             </motion.div>
 
             {/* Thumbnail Gallery */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 mb-12">
+            <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 gap-4 mb-12">
               {uniforms.map((uniform, index) => (
                 <motion.button
                   key={uniform.id}

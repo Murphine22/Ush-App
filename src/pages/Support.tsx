@@ -1,35 +1,7 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useSupport } from '../context/SupportContext';
-import { 
-  X, 
-  Phone, 
-  User, 
-  Crown, 
-  UserCheck, 
-  ChevronDown, 
-  ChevronUp, 
-  Plus, 
-  Edit, 
-  Trash2, 
-  Save,
-  Shield,
-  Users,
-  Heart,
-  BookOpen,
-  Settings,
-  Eye,
-  Shirt,
-  Monitor,
-  Mail,
-  MapPin,
-  Clock,
-  Star,
-  MessageCircle,
-  Calendar,
-  Award,
-  Zap
-} from 'lucide-react';
+import { X, Phone, User, Crown, UserCheck, ChevronDown, ChevronUp, Plus, CreditCard as Edit, Trash2, Save, Shield, Users, Heart, BookOpen, Settings, Eye, Shirt, Monitor, Mail, MapPin, Clock, Star, MessageCircle, Calendar, Award, Zap } from 'lucide-react';
 
 interface SupportPageProps {
   onClose: () => void;
@@ -179,7 +151,7 @@ const SupportPage: React.FC<SupportPageProps> = ({ onClose }) => {
                   <Crown className="h-10 w-10 text-white" />
                 </div>
                 <div>
-                  <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Acting Leader</h2>
+                  <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Head of Department</h2>
                   <p className="text-yellow-700 dark:text-yellow-300 text-lg">Department Head & Coordinator</p>
                 </div>
                 <div className="ml-auto flex items-center space-x-2 bg-green-100 dark:bg-green-900/30 px-4 py-2 rounded-full animate-pulse">
@@ -195,19 +167,19 @@ const SupportPage: React.FC<SupportPageProps> = ({ onClose }) => {
                       <User className="h-6 w-6 text-blue-600" />
                     </div>
                     <div>
-                      <span className="font-bold text-2xl text-gray-900 dark:text-white">Deacon Chinedu</span>
+                      <span className="font-bold text-2xl text-gray-900 dark:text-white">Engr Abraham Oshiomah</span>
                       <p className="text-gray-600 dark:text-gray-400 text-sm">Senior Leadership</p>
                     </div>
                   </div>
                 </div>
                 
                 <div className="grid md:grid-cols-2 gap-6 mb-6">
-                  <a 
-                    href="tel:+2348037865842"
+                  <a
+                    href="tel:+2348036347730"
                     className="flex items-center space-x-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-4 rounded-xl hover:from-blue-600 hover:to-blue-700 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
                   >
                     <Phone className="h-5 w-5" />
-                    <span className="font-medium">+234 803 786 5842</span>
+                    <span className="font-medium">+234 803 634 7730</span>
                   </a>
                   <div className="flex items-center space-x-3 bg-gray-100 dark:bg-gray-700 px-6 py-4 rounded-xl">
                     <MapPin className="h-5 w-5 text-gray-600 dark:text-gray-400" />
