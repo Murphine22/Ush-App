@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { ChevronLeft, ChevronRight, Phone, Maximize2, X, Play, Pause, Sparkles, Shirt, Crown, Gem } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Phone, Maximize2, X, Play, Pause } from 'lucide-react';
 import Footer from '../components/Footer';
 import SEOManager from '../components/SEO/SEOManager';
 import { generateMetaTags } from '../utils/seo';

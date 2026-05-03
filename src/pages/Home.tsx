@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Users, Heart, Shield, HandHeart, Star, ChevronRight, Sparkles, ArrowRight, Play } from 'lucide-react';
+import { Users, Heart, Shield, HandHeart, Star, Sparkles, ArrowRight, Play } from 'lucide-react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import ImageCarousel from '../components/ImageCarousel';
 import AnnouncementManager from '../components/AnnouncementManager';
@@ -9,8 +9,7 @@ import SEOManager from '../components/SEO/SEOManager';
 import { generateMetaTags } from '../utils/seo';
 
 const Home = () => {
-  const memberCount = 596;
-  const [showSupport, setShowSupport] = React.useState(false);
+  const [showSupport, setShowSupport] = useState(false);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const seoData = generateMetaTags('home');
   

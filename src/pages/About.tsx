@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Users, Target, BookOpen, Award, Heart, Shield, Lightbulb, Handshake, Sparkles, TrendingUp, Clock, Globe } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Users, Target, BookOpen, Award, Heart, Shield, Lightbulb, Handshake, Sparkles, TrendingUp, Globe } from 'lucide-react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import ImageCarousel from '../components/ImageCarousel';
 import Footer from '../components/Footer';
